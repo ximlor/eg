@@ -1,0 +1,49 @@
+.popup-box-wrap, .popup-box-shade {
+    position: fixed;
+    top:      0;
+    left:     0;
+    width:    100%;
+    height:   100%;
+}
+
+.popup-box-wrap {
+    display:         flex;
+    justify-content: center;
+    align-items:     center;
+    z-index:         99999;
+}
+
+.popup-box-shade {
+    pointer-events:   none;
+    background-color: rgba(0, 0, 0, 0.70);
+}
+
+.popup-box-main {
+    position:   relative;
+    text-align: center;
+    z-index:    999999999;
+    max-width: 90%;
+}
+
+.popup-box-close {
+    position:                absolute;
+    top:                     -2.75rem;
+    right:                   .2rem;
+    width:                   1.375rem;
+    height:                  1.375rem;
+    cursor:                  pointer;
+    background-image:        url("close@3x.png");
+    -webkit-background-size: cover;
+    background-size:         cover;
+}
+
+.hide{
+    display: none;
+}
+
+/* 自定义样式 */
+
+.popup-box-main {
+    background-color: #fff;
+    border-radius:    2px;
+}

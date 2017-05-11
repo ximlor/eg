@@ -1,0 +1,73 @@
+/* Background */
+
+.bg > img {
+    width: 100%;
+}
+
+.btn {
+    position:    absolute;
+    top:         0;
+    width:       100%;
+    padding-top: 44%;
+    text-align:  center;
+    z-index:     2;
+}
+
+.btn > img {
+    max-width: 62.3%;
+}
+
+/* Form */
+
+h3 {
+    color: #233347;
+}
+
+.row {
+    margin: 1rem;
+}
+
+.required:before {
+    content:     '*';
+    color:       red;
+    position:    absolute;
+    margin-left: -0.5rem;
+    line-height: 2.4rem;
+}
+
+input {
+    -webkit-appearance:          none;
+    appearance:                  none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    display:                     inline-block;
+    border:                      0;
+    line-height:                 normal;
+    padding:                     0.6rem;
+    background-color:            #f4f4f4;
+    width:                       20rem;
+    max-width:                   80%;
+}
+
+.row:nth-last-of-type(1) input {
+    background-color:            #ff8c1a;
+    padding-left:                2rem;
+    padding-right:               2rem;
+    color:                       whitesmoke;
+    -webkit-appearance:          none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.warn img {
+    width:  3.66rem;
+    height: 3.66rem;
+}
+
+.warn .popup-box-main {
+    width:     10rem;
+    max-width: 640px;
+    padding:   60px 30px;
+}
+
+.warn .popup-box-main > div:nth-of-type(1) {
+    margin-bottom: 1rem;
+}

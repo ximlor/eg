@@ -1,0 +1,9 @@
+html, body, div, form {
+    margin:  0;
+    padding: 0;
+}
+
+html {
+    font-family: "PingFang SC", Tahoma, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+}

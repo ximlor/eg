@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>签到活动</title>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+    <link href="reset.css" rel="stylesheet">
+    <link href="popup.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="bg">
+        <img src="A7D5B1A5-6CB0-4E49-9FEB-6582DED15F6D@3x.png">
+    </div>
+
+<div class="btn">
+    <img src="46B1E535-D012-442D-A319-E442B7C897EB@3x.png">
+</div>
+
+<div class="popup-box hide">
+    <div class="popup-box-wrap">
+        <div class="popup-box-shade"></div>
+        <div class="popup-box-main">
+            <div>
+                <h3>签到</h3>
+                <form name="userinfo" id="userinfo">
+                    <div class="row required">
+                        <input type="text" name="name" placeholder="真实姓名" autocomplete="off" data-msg="真实姓名不能为空!"
+                               required/>
+                    </div>
+                    <div class="row required">
+                        <input type="tel" name="phone" placeholder="手机号码" autocomplete="off" data-msg="请填写正确的手机号码!"
+                               required/>
+                    </div>
+                    <div class="row">
+                        <input type="text" name="qq" placeholder="QQ号" autocomplete="off"/>
+                    </div>
+                    <div class="row">
+                        <input type="email" name="email" placeholder="电子邮箱" autocomplete="off"/>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="提交"/>
+                    </div>
+                </form>
+                <div class="close"></div>
+            </div>
+        </div>
+    </div>
+    <div class="popup-box-wrap hide alert">
+        <div class="popup-box-shade"></div>
+        <div class="popup-box-main">
+            <div class="warn-content">
+                <div></div>
+                <div><span>确定</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    (function () {
+        var d = document,
+                gt = 'getElementsByTagName',
+                gc = 'getElementsByClassName',
+                gn = 'getElementsByName';
+
+        var hot = d[gt]('area')[0],
+                popupBox = d[gc]('popup-box')[0],
+                close = d[gc]('close')[0];
+
+        var status = 0;
+
+        d.addEventListener('click', function (e) {
+            e = e || event;
+            var target = e.target;
+
+            if (target.classList.contains('hot')) {
+                e.preventDefault();
+                popupBox.classList.remove('hide');
+            }
+            else if (target.classList.contains('close')) {
+                popupBox.classList.add('hide');
+            }
+        });
+
+        d.addEventListener('submit', function (e) {
+            e = e || event;
+            e.preventDefault();
+
+            var name = d[gn]('name')[0],
+                    phone = d[gn]('phone')[0],
+                    email = d[gn]('email')[0],
+                    qq = d[gn]('qq')[0];
+
+            var validator = [
+                [email, /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/, true],
+                [phone, /^\d{11}$/],
+                [name, /\S+/]
+            ];
+
+            for (var n = validator.length; n--;) {
+                if ((!(validator[n][2] || validator[n][1].test(validator[n][0]['value'])) )
+                        || (validator[n][2] && validator[n][0]['value'] && !validator[n][1].test(validator[n][0]['value']))) {
+                    popup(validator[n][0].getAttribute('data-msg'));
+                    return false;
+                }
+            }
+
+            // 加载框
+
+            ajax({
+                type: 'POST',
+                url: window.location.origin + '/h5/checkin/',
+                handler: function (data) {
+                    $oData = JSON.parse(data);
+
+                    if (-$oData.status && $oData['data']['error']) {
+                        popup($oData['data']['error']);
+                    }
+                    else {
+                        popup('签到成功');
+                        status = 1;
+                    }
+
+                },
+                data: {
+                    name: name.value,
+                    phone: phone.value,
+                    email: email.value,
+                    qq: qq.value,
+                    id: d.body.id
+                }
+            });
+
+        });
+
+        function popup(msg) {
+            var place = d[gc]('alert')[0],
+                    content = d[gc]('warn-content')[0];
+
+            content.children[0].innerHTML = '<span>' + msg + '</span>';
+
+            place.classList.remove('hide');
+
+            content.children[1].onclick = function () {
+                status && (window.location.href = window.location.origin + '/h5/checkin/');
+                place.classList.add('hide');
+            };
+        }
+
+        function ajax(options) {
+            var xhr = new XMLHttpRequest();
+
+            if (xhr === null) {
+                console.log('ajax error');
+            }
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    options.handler(this.responseText);
+                }
+            };
+
+            xhr.open(options.type, options.url, true);
+
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+            xhr.send(JSON.stringify(options.data));
+            console.log(JSON.stringify(options.data));
+        }
+
+    })();
+
+</script>
+
+</body>
+</html>

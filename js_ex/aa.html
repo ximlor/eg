@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>签到活动</title>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+
+    <style>
+
+        html, body, div, form
+        {
+            margin:  0;
+            padding: 0;
+        }
+
+        /* layout */
+
+        .show-box > img
+        {
+            display: block;
+            width:   100%;
+        }
+
+        .popup-box
+        {
+            position: relative;
+            z-index:  9999;
+        }
+
+        .popup-box-wrap
+        {
+            position: fixed;
+            top:      0;
+            left:     0;
+            width:    100%;
+            height:   100%;
+            display:  table;
+        }
+
+        .popup-box-shade
+        {
+            position:         fixed;
+            top:              0;
+            left:             0;
+            width:            100%;
+            height:           100%;
+            pointer-events:   none;
+            background-color: rgba(0, 0, 0, .7);
+        }
+
+        .popup-box-main
+        {
+            display:        table-cell;
+            vertical-align: middle;
+            text-align:     center;
+        }
+
+        .popup-box-main > div
+        {
+            position: relative;
+            display:  inline-block;
+        }
+
+        .row
+        {
+            margin: 1rem;
+        }
+
+        .close
+        {
+            position: absolute;
+            top:      .2rem;
+            right:    .2rem;
+            display:  inline-block;
+            overflow: hidden;
+            width:    1.2rem;
+            height:   1.2rem;
+            cursor: pointer;
+        }
+
+        .close::before, .close::after
+        {
+            position:   absolute;
+            top:        50%;
+            left:       0;
+            width:      100%;
+            height:     2px;
+            margin-top: -1px;
+            content:    '';
+        }
+
+        .close::before
+        {
+            -webkit-transform: rotate(45deg);
+            -moz-transform:    rotate(45deg);
+            -ms-transform:     rotate(45deg);
+            -o-transform:      rotate(45deg);
+            transform:         rotate(45deg);
+        }
+
+        .close::after
+        {
+            -webkit-transform: rotate(-45deg);
+            -moz-transform:    rotate(-45deg);
+            -ms-transform:     rotate(-45deg);
+            -o-transform:      rotate(-45deg);
+            transform:         rotate(-45deg);
+        }
+
+        .warn-content
+        {
+            width:     10rem;
+            max-width: 640px;
+        }
+
+        .warn-content div:nth-child(1)
+        {
+            padding: 60px 30px;
+        }
+
+        .warn-content div:nth-child(2)
+        {
+            display:     -webkit-box;
+            display:     -moz-box;
+            display:     box;
+            width:       100%;
+            position:    relative;
+            height:      50px;
+            line-height: 50px;
+            text-align:  center;
+        }
+
+        .warn-content div:nth-child(2) span
+        {
+            position:         relative;
+            display:          block;
+            -webkit-box-flex: 1;
+            -moz-box-flex:    1;
+            box-flex:         1;
+            text-align:       center;
+        }
+
+        .hide
+        {
+            display: none;
+        }
+
+        .required:before
+        {
+            content:     '*';
+            color:       red;
+            position:    absolute;
+            margin-left: -8px;
+        }
+
+        /* style */
+
+        body
+        {
+            font-family: Helvetica, arial, sans-serif;
+        }
+
+        .popup-box-main > div
+        {
+            background-color: #f4f4f4;
+            border:           .22rem solid #BEBEBE;
+            border-radius:    .5rem;
+        }
+
+        .popup-box-main h3
+        {
+            color: #AEAEAE;
+        }
+
+        .popup-box-main input
+        {
+            border:        .1rem solid darkgray;
+            border-radius: .2rem;
+            line-height:   normal;
+            padding:       .6rem;
+        }
+
+        .required:before
+        {
+            line-height: 2.4rem;
+        }
+
+        .row:nth-last-of-type(1) input
+        {
+            background-color: #D8D8D8;
+            padding-left:     2rem;
+            padding-right:    2rem;
+            color:            whitesmoke;
+
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+        }
+
+        .close::before, .close::after
+        {
+            background: #B3B3B3;
+        }
+
+        .warn-content
+        {
+            background-color: #f4f4f4;
+            border:           .22rem solid #BEBEBE;
+            border-radius:    .5rem;
+            color:            #A2A2A2;
+        }
+
+        .warn-content div:nth-child(2)
+        {
+            border-top:       1px solid #D0D0D0;
+            background-color: #F2F2F2;
+            border-radius:    0 0 .5rem .5rem;
+        }
+
+        .warn-content div:nth-child(2) span
+        {
+            border-radius:    0 0 5px 5px;
+            font-size:        1rem;
+            background-color: #D8D8D8;
+            cursor:           pointer;
+        }
+
+    </style>
+</head>
+<body id=<?php echo "'{$data['id']}'" ?>>
+
+<div class="wrap-main">
+
+    <div class="show-box">
+
+        <img src=<?php echo $data['bg_img'] ?> usemap="#checkin"/>
+        <map name="checkin" id="checkin">
+
+            <area shape="rect" class="hot" coords="0,50,2000,150" href="javascript:void(0);"/>
+
+        </map>
+
+    </div>
+
+    <div class="popup-box hide">
+        <div class="popup-box-wrap">
+            <div class="popup-box-shade"></div>
+            <div class="popup-box-main">
+                <div>
+                    <h3>签到</h3>
+                    <form name="userinfo" id="userinfo">
+                        <div class="row required">
+                            <input type="text" name="name" placeholder="真实姓名" autocomplete="off" data-msg="真实姓名不能为空!"
+                                   required/>
+                        </div>
+                        <div class="row required">
+                            <input type="tel" name="phone" placeholder="手机号码" autocomplete="off" data-msg="请填写正确的手机号码!"
+                                   required/>
+                        </div>
+                        <div class="row">
+                            <input type="text" name="qq" placeholder="QQ号" autocomplete="off" />
+                        </div>
+                        <div class="row">
+                            <input type="email" name="email" placeholder="电子邮箱" autocomplete="off"/>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="提交"/>
+                        </div>
+                    </form>
+                    <div class="close"></div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-box-wrap hide alert">
+            <div class="popup-box-shade"></div>
+            <div class="popup-box-main">
+                <div class="warn-content">
+                    <div></div>
+                    <div><span>确定</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    (function () {
+        var d = document,
+                gt = 'getElementsByTagName',
+                gc = 'getElementsByClassName',
+                gn = 'getElementsByName';
+
+        var hot = d[gt]('area')[0],
+                popupBox = d[gc]('popup-box')[0],
+                close = d[gc]('close')[0];
+
+        var status = 0;
+
+        (function (){
+            var stime, etime, touch, targetElement;
+
+            d.addEventListener('touchstart', function(e) {
+                stime = e.timeStamp;
+            });
+
+            d.addEventListener('touchend', function(e) {
+                touch = event.changedTouches[0];
+                if (touch.target.nodeName.toLowerCase() !== 'input') {
+                    e.preventDefault();
+                }
+
+                etime = e.timeStamp;
+
+                if ( Math.abs(stime - etime) < 200) {
+                    targetElement = document.elementFromPoint(touch.pageX - window.pageXOffset, touch.pageY - window.pageYOffset) || touch.target;
+                    clickEvent = document.createEvent('MouseEvents');
+                    clickEvent.initMouseEvent('click', true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
+                    clickEvent.forwardedTouchEvent = true;
+                    targetElement.dispatchEvent(clickEvent);
+                }
+            });
+        })();
+
+        d.addEventListener('click', allClick);
+
+        d.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var name = d[gn]('name')[0],
+                    phone = d[gn]('phone')[0],
+                    email = d[gn]('email')[0],
+                    qq = d[gn]('qq')[0];
+
+            var validator = [
+                [email, /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/, true],
+                [phone, /^\d{11}$/],
+                [name, /\S+/]
+            ];
+
+            for (var n = validator.length; n--;) {
+                if ((!(validator[n][2] || validator[n][1].test(validator[n][0]['value'])) )
+                        || (validator[n][2] && validator[n][0]['value'] && !validator[n][1].test(validator[n][0]['value']))) {
+                    popup(validator[n][0].getAttribute('data-msg'));
+                    return false;
+                }
+            }
+
+            // 加载框
+
+            ajax({
+                type: 'POST',
+                url: window.location.origin + '/h5/checkin/',
+                handler: function (data) {
+                    $oData = JSON.parse(data);
+
+                    if (-$oData.status && $oData['data']['error']) {
+                        popup($oData['data']['error']);
+                    }
+                    else {
+                        popup('签到成功');
+                        status = 1;
+                    }
+
+                },
+                data: {
+                    name: name.value,
+                    phone: phone.value,
+                    email: email.value,
+                    qq: qq.value,
+                    id: d.body.id
+                }
+            });
+
+        });
+
+        function allClick(e) {
+            e = e || event;
+            var target = e.target;
+
+            if (target.classList.contains('hot')) {
+                popupBox.classList.remove('hide');
+            }
+            else if (target.classList.contains('close')) {
+                popupBox.classList.add('hide');
+            }
+        }
+
+        function popup(msg) {
+            var place = d[gc]('alert')[0],
+                    content = d[gc]('warn-content')[0];
+
+            content.children[0].innerHTML = '<span>' + msg + '</span>';
+
+            place.classList.remove('hide');
+
+            content.children[1].onclick = function () {
+                status && (window.location.href = window.location.origin + '/h5/checkin/');
+                place.classList.add('hide');
+            };
+        }
+
+        // 目测 classList 都兼容
+        function deleteClass(elem, className) {
+            if (!d.body.classList) {
+                var allClass = elem['className'];
+                allClass = ' ' + allClass + ' ';
+                allClass = allClass.replace(' ' + className + ' ', ' ');
+                elem['className'] = allClass;
+            }
+        }
+
+        function ajax(options) {
+            var xhr = new XMLHttpRequest();
+
+            if (xhr === null) {
+                console.log('ajax error');
+            }
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    options.handler(this.responseText);
+                }
+            };
+
+            xhr.open(options.type, options.url, true);
+
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+            xhr.send(JSON.stringify(options.data));
+            console.log(JSON.stringify(options.data));
+        }
+
+    })();
+
+</script>
+
+</body>
+</html>

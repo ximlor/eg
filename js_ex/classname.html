@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div class="abc ab a"></div>
+
+<script>
+
+    var div = document.getElementsByTagName('div')[0];
+
+    var classVal = div.getAttribute('class');
+    classVal = ' ' + classVal + ' ';
+
+    // 删除
+    classVal = classVal.replace(' ab ', ' ');
+
+    // 添加
+    classVal += ' bcd';
+
+    // 替换
+    classVal = classVal.replace(' abc ', ' bc ');
+
+    div.setAttribute('class', classVal);
+
+    div.innerHTML = div.getAttribute('class');
+
+</script>
+</body>
+</html>
